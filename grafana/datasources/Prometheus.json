@@ -1,0 +1,7 @@
+{
+    "name":"prometheus",
+    "type":"prometheus",
+    "url":"http://prometheus.devops.net.by",
+    "access":"proxy",
+    "basicAuth":false
+  }

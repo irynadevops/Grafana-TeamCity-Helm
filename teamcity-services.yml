@@ -1,7 +1,7 @@
 
 services:
   grafana:
-    image: "grafana/grafana:latest"
+    image: "mumz/grafana:my"
     container_name: grafana
     volumes:
       - grafana_data:/var/lib/grafana

@@ -1,0 +1,5 @@
+replicaCount: 1
+image:
+  repository: docker.io/mumz/grafana
+  pullPolicy: Always
+  tag: latest

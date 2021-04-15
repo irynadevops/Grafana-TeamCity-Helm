@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grafana-my
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana-my
+  name: grafana-my
+spec:
+  replicas: "{{ .Values.replicaCount }}"
+  selector:
+    matchLabels:
+      app: grafana-my
+  template:
+    metadata:
+      labels:
+        app: grafana-my
+    spec:
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ Values.image.tag }}"
+        name: grafana-my
+        ports:
+        - containerPort: 3000
+          name: grafana-my
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: grafana-my
+  name: grafana-my
+spec:
+  type: ClusterIP
+  ports:
+  - name: "grafana-my-service"
+    port: 3000
+    targetPort: 3000
+  selector:
+    app: grafana-my
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-grafana-my
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issue: devops-cluster-cert-issuer
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+  - hosts:
+    - "grafana-my.devops.net.by"
+    secretName: grafana-my-certificate-tls
+  rules:
+    - host: grafana-my.devops.net.by
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: grafana-my
+              servicePort: 3000
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: grafana-my-certificate-tls
+  namespace: grafana-my
+spec:
+  secretName: grafana-my-certificate-tls
+  issuerRef:
+    kind: ClusterIssuer
+    name: devops-cluster-cert-issuer
+  dnsNames:
+  - "grafana-my.devops.net.by"
+

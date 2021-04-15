@@ -15,7 +15,7 @@ spec:
         app: grafana-my
     spec:
       containers:
-      - image: "{{ .Values.image.repository }}:{{ Values.image.tag }}"
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         name: grafana-my
         ports:
         - containerPort: 3000
